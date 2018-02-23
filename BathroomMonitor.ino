@@ -16,9 +16,15 @@ const char* password = "polarbear";
 // specify the port to listen on as an argument
 WiFiServer server(730);
 
+int pinSquare = 0;
+int pinWindow = 1;
+
 void setup() {
   Serial.begin(115200);
   delay(10);
+
+  pinMode(pinSquare, INPUT);
+  pinMode(pinWindow, INPUT);
 
   // prepare GPIO2
   pinMode(2, OUTPUT);
@@ -77,7 +83,7 @@ void doStuff(){
   else if (req.indexOf("/gpio/1") != -1)
     gpioRoute(1);
   else if(req.indexOf("/status") != -1){
-    
+    statusRoute();
   }
   else {
     Serial.println("invalid request");
@@ -102,6 +108,19 @@ void gpioRoute(int val){
   s += (val)?"high":"low";
   s += "</html>\n";
 
+  writeMessageToClient(s);
+}
+
+void statusRoute(){
+  int valSquare = digitalRead(pinSquare);
+  int valWindow = digitalRead(pinWindow);
+  String s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>\r\n";
+  s += "Square bathroom is ";
+  s += (valSquare)?"<span id='square' value=1>Busy</span><br>":"<span id='square' value=0>Free</span><br>";
+  s += "Window bathroom is ";
+  s += (valWindow)?"<span id='window' value=1>Busy</span><br>":"<span id='window' value=0>Free</span><br>";
+  s += "</html>\n";
+  
   writeMessageToClient(s);
 }
 
