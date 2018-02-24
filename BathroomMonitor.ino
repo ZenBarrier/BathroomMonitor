@@ -16,8 +16,8 @@ const char* password = "polarbear";
 // specify the port to listen on as an argument
 WiFiServer server(730);
 
-int pinSquare = 0;
-int pinWindow = 1;
+int pinSquare = 3;
+int pinWindow = 4;
 
 void setup() {
   Serial.begin(115200);
